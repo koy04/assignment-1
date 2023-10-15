@@ -1,0 +1,189 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <windows.h>  // Windows 시간 지연을 위한 헤더
+#include <time.h>
+
+#define DIALOG_DURATION_SEC 5
+
+// 원래 있는 함수
+void gotoxy(int row, int col);
+void draw(void);
+// 불러온 함수
+void restorePreviousScreen();
+void displayDialog(char message[], int duration);
+// 게임 종류 함수
+void game1(void);
+
+// 게임 화면을 저장하는 전역 변수
+char previousScreen[100];  // 이 예제에서는 화면을 문자열로 표현
+// 원래 있는 전역 변수
+int tick = 0;  // 시계
+char map[10][20], front[10][20];
+
+
+void gotoxy(int row, int col) {
+	COORD pos = { col, row };  // 행, 열반대로전달
+	SetConsoleCursorPosition(
+		GetStdHandle(STD_OUTPUT_HANDLE),
+		pos
+	);
+}
+
+void draw(void) {
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			if (front[i][j] != map[i][j]) {
+				front[i][j] = map[i][j]; gotoxy(i, j);
+				printf("%c", front[i][j]);
+			}
+		}
+	}
+}
+
+// game1 프로그램
+void game1(void) {
+	// 'previousScreen'를 초기화 - 이거 GPT
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			previousScreen[i * 20 + j] = ' '; // 초기화는 공백으로
+		}
+	}
+
+	while (1) {
+
+		//여기 GPT
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 20; j++) {
+				previousScreen[i * 20 + j] = front[i][j];
+			}
+		}
+
+		// 게임 진행 중...
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 20; j++) {
+				if (i == 0 || i == 9 || j == 0 || j == 19)
+					map[i][j] = '#';
+				else
+					map[i][j] = ' ';
+			}
+		}
+		map[1][1] = '*';// 4방향의변위(Δx, Δy)
+		int dx[4] = { -1, 1, 0, 0 };
+		int dy[4] = { 0, 0, -1, 1 };
+		int x = 1, y = 1;
+		int dir = 3; // 방향(direction). 처음에는오른쪽
+
+		while (1) {
+			// 'w', 's', 'a', 'd': 이동, 'q': 종료
+			if (_kbhit()) {
+				int key = _getch();
+				switch (key) {
+				case 'w': dir = 0; break;  // up (x-1, y+0)
+				case 's': dir = 1; break;  // down (x+1, y+0)
+				case 'a': dir = 2; break;  // left (x+0, y-1)
+				case 'd': dir = 3; break;  // right (x+0, y+1)
+				case 'q': return 0;
+				case 'p': displayDialog("게임 일시 중지", DIALOG_DURATION_SEC);
+					//여기 GPT
+					for (int i = 0; i < 10; i++) {
+						for (int j = 0; j < 20; j++) {
+							previousScreen[i * 20 + j] = front[i][j];
+						}
+					}
+				}
+			}// 0.1초마다'*' 이동
+
+			if (tick % 100 == 0) {// nx, ny: 다음위치
+				int nx = x + dx[dir];
+				int ny = y + dy[dir];// (nx, ny)로이동할수없으면pass
+				if (nx > 0 && nx < 9 && ny> 0 && ny < 19) {
+					map[x][y] = ' ';  // 지우고
+					x = nx; y = ny;   // 이동
+					map[x][y] = '*';  // 새위치에출력
+				}
+			}
+			// 어떤 이벤트나 조건에서 dialog 함수 호출
+
+			// 게임 계속 진행...
+			draw();
+			Sleep(10);
+			tick += 10;
+		}
+	}
+}
+
+// 이전 화면을 복원하는 함수
+void restorePreviousScreen() {
+	gotoxy(11, 0);
+	printf("이전 화면 복원: %s\n", previousScreen);
+
+	// 여기 GPT
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			gotoxy(i, j);
+			printf("%c", previousScreen[i * 20 + j]);
+		}
+	}
+}
+
+// 대화 화면을 표시하는 함수 - 이거 GPT
+void displayDialog(char message[], int duration) {
+	time_t startTime = time(NULL);
+	int remainingTime = duration;
+
+	while (remainingTime >= 0) {
+		// 대화 메시지를 출력
+		gotoxy(4, 1);
+		printf("  남은 시간: %d 초\n메시지: %s\n", remainingTime, message);
+
+		// 현재 게임 화면을 다시 그릴 수 있도록 'draw' 함수 호출
+		draw();
+
+		Sleep(1000);
+		remainingTime--;
+
+		if (remainingTime == 0) {
+			// 대화 메시지 영역을 지우기 위해 빈 문자열로 덮어쓰기
+			gotoxy(4, 1);
+			printf("                  #");
+			gotoxy(5, 0);
+			printf("#                  #  ");
+			break;
+		}
+	}
+}
+
+
+void random_game(void);
+
+void random_game(void) {
+
+	srand(time(NULL));
+
+	int Num1 = rand() % 2;
+	printf("첫 번째 게임: %d\n", Num1);
+
+	if (Num1 == 0) {
+		game1();
+		printf("game2");
+	}
+	else if (Num1 == 1) {
+		printf("game2");
+		game1();
+	}
+
+	return 0;
+}
+
+int main(void) {
+
+	// 게임 시작 시 초기화
+	strcpy_s(previousScreen, sizeof(previousScreen), "게임 화면 초기화");  // 안전한 문자열 복사 함수 사용
+	random_game();
+	// 게임 루프
+
+}
