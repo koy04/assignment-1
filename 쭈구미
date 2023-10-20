@@ -1,0 +1,180 @@
+// 2023-2 고급프로그래밍 과제: 쭈꾸미 게임
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <time.h>
+#include <conio.h>
+#include <Windows.h>
+#include "jjuggumi.h"
+
+#define	DATA_FILE	"jjuggumi.dat"
+
+int place[10][40] = { {0} };
+
+void intro(void);
+
+int jjuggumi_init(void);
+
+void mugunghwa(void);
+
+// low 이상 high 이하 난수를 발생시키는 함수
+int randint(int low, int high) {
+	int rnum = rand() % (high - low + 1) + low;
+	return rnum;
+}
+
+void intro(void) {
+	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#$$$$$$$$$$$$@@@@@\n");
+	printf("@@@@@@@$~,,,:#@@@@@@@@*;@@@@@@@~...........,#@@@@\n");
+	printf("@@@@@@!,,~:~,,!@@@@@@$,-#@@@@@@~,:;;;;;;;;~.#@@@@\n");
+	printf("@@@@@;.:$@@@$-,!@@@@@;..;@@@@@@~-@@@@@@@@@*.#@@@@\n");
+	printf("@@@@=,~#@@@@@@~.$@@@#,~~,$@@@@@~-@@@@@@@@@*,#@@@@\n");
+	printf("@@@@;,#@@@@@@@=,;@@@:,$$-~@@@@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@-:@@@@@@@@@-~@@=,!@@:.*@@@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@,;@@@@@@@@@~~##~,$@@#--@@@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@-~@@@@@@@@@-~@*,*@@@@*.!@@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@;,#@@@@@@@=.:#,~@@@@@@~.#@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@=,~#@@@@@@~.=:,=@@@@@@=.;@@~,@@@@@@@@@*,#@@@@\n");
+	printf("@@@@@:.:#@@@$~.;=,~@@@@@@@@-,=@~,@@@@@@@@@!,#@@@@\n");
+	printf("@@@@@@;,,:;:,,!@:.@@@@@@@@@@-.~#~.~~~~~~~~~,,#@@@\n");
+	printf("@@@@@@@#~..,:@@$-,,,,,,,,,,,,-*:,,,,,,,,,,,,#@@@@\n");
+	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+	printf("\n");
+
+	Sleep(1500);
+	system("cls");
+
+
+	int y = 4;
+	int x = 10;
+	while (y < 42) {
+		gotoxy(0, y); printf("*");
+		Sleep(10);
+
+		gotoxy(2, 2); printf("이자리에 오신 여러분을 진심으로 환영합니다");
+
+		gotoxy(4, 2); printf("게임을 진행하실려면 Enter 를 눌러주십시오.");
+
+		gotoxy(7, 16); printf("Press Enter...");
+
+		gotoxy(x, y); printf("*");
+		Sleep(10);
+		y++;
+	}
+	int get = getchar();
+	system("cls");
+}
+
+int jjuggumi_init(void) {
+	srand((unsigned int)time(NULL));
+
+	printf("플레이어 수: ");
+	scanf_s("%d", &n_player);
+
+	n_alive = n_player;
+	for (int i = 0; i < n_player; i++) {
+		player[i] = true;
+	}
+	return 0;
+}
+
+void mugunghwa(void) {
+	system("cls");
+	int pt[5][2] = { {2,33},{3,33},{4,33},{5,33},{6,33} }, i;
+
+	for (i = 0; i < 9; i++) {
+		for (int j = 0; j < 35; j++) {
+			if (i == 0 || i == 8) {
+				place[i][j] = 5;
+			}
+			if (j == 0 || j == 34) {
+				place[i][j] = 5;
+			}
+		}
+	}
+	for (i = 3; i <= 5; i++)
+		place[i][1] = 6;
+	for (i = 0; i < 5; i++) {
+		place[pt[i][0]][pt[i][1]] = i;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////출력
+
+	for (i = 0; i < 9; i++) {
+		for (int j = 0; j < 35; j++) {
+			if (place[i][j] == 5)
+				printf("*");
+			else if (place[i][j] == 0)
+				if (pt[0][0] == i && pt[0][1] == j)
+					printf("%d", place[i][j]);
+				else
+					printf(" ");
+			else if (place[i][j] == 6)
+				printf("#");
+			else
+				printf("%d", place[i][j]);
+		}
+		printf("\n");
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	int tick = 0, dir = 4, fast = 1000, yunghi_cnt = 0;
+	int dx[5] = { -1, 1, 0, 0, 0 };
+	int dy[5] = { 0, 0, -1, 1, 0 };
+	char yunghi[20] = { '무','궁','화','꽃','이','피','었','습','니','다' };
+
+	while (1) {
+		if (_kbhit()) {
+			// 키입력은loop 돌때마다확인
+			int key = _getch();
+			if (key == 224) {
+				key = _getch();
+				switch (key) {
+				case 75: dir = 2; break;
+				case 77: dir = 3; break;
+				case 72: dir = 0; break;
+				case 80: dir = 1; break;
+				}
+			}
+			else if (key == 'q') {
+				break;
+			}
+		}
+
+		if (tick % 100 == 0) {
+			gotoxy(pt[0][0], pt[0][1]);
+			printf(" ");  // 지우고
+			pt[0][0] += dx[dir];
+			pt[0][1] += dy[dir];  // 이동
+			gotoxy(pt[0][0], pt[0][1]);
+			printf("0");  // 새위치에출력
+			dir = 4;
+		}
+
+		if (tick % fast == 0) {
+			gotoxy(9, yunghi_cnt * 2);
+			printf("%c ", yunghi[yunghi_cnt]);
+			yunghi_cnt++;
+			if (yunghi_cnt == 10) {
+				for (i = 0; i <= 9; i++) { gotoxy(9, i * 2);  printf(" "); }
+				yunghi_cnt = 0;
+			}
+		}
+
+		Sleep(10);
+		tick += 10;
+	}
+}
+
+int main(void) {
+	//intro();
+	jjuggumi_init();
+	sample();
+	mugunghwa();
+	//nightgame();
+	//juldarigi();
+	//jebi();
+	return 0;
+}
