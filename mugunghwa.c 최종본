@@ -247,15 +247,6 @@ void mugunghwa_clear(int player) {
 		}
 	}
 }
-void ending() {
-
-}
-void stop() {
-
-
-
-	//ending();
-}
 
 void mugunghwa(void) {
 
@@ -279,5 +270,21 @@ void mugunghwa(void) {
 		tick += 10;
 		tick_mugunghwa();
 	}
-	//엔딩 2가지
+}
+void stop(void) {
+   system("cls");
+   int alive_players = 0;
+   for (int i = 0; i < n_player; i++) {
+      if (player[i]) {
+         alive_players++;
+      }
+   }
+   printf("우승자를 가리지 못했습니다.\n\n");
+   printf("살아남은 플레이어 : ");
+
+   for (int i = 0; i < n_player; i++) {
+      if (player[i]) {
+         printf(" %d", i);
+      }
+   }
 }
