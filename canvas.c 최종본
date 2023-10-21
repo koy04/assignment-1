@@ -87,11 +87,11 @@ void dialog(char message[]) {
 	}
 
 	for (int i = DIALOG_DURATION_SEC; i >= 1; i--) {
-		gotoxy(4, 8);
+		gotoxy(5, 12);
 		printf("*************************");
-		gotoxy(5, 8);
-		printf("%d초%s", i, message);
-		gotoxy(6, 8);
+		gotoxy(6, 12);
+		printf("*%d%s*", i, message);
+		gotoxy(7, 12);
 		printf("*************************");
 		Sleep(1000);
 	}
@@ -111,3 +111,4 @@ void dialog(char message[]) {
 	}
 	display();
 }
+
