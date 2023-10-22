@@ -44,7 +44,7 @@ void move_manual(key_t key) {
 	case K_UP: dir = DIR_UP; break;
 	case K_DOWN: dir = DIR_DOWN; break;
 	case K_LEFT: dir = DIR_LEFT; break;
-	case K_RIGHT: dir = DIR_RIGHT; break;	
+	case K_RIGHT: dir = DIR_RIGHT; break;
 	default: return;
 	}
 
@@ -83,7 +83,7 @@ void move_tail(int player, int nx, int ny) {
 	py[p] = ny;
 }
 
-void sample(void) {
+void start(void) {
 	sample_init();
 
 	system("cls");
@@ -108,7 +108,7 @@ void sample(void) {
 		display();
 		Sleep(10);
 		tick += 10;
-		if (tick % 3000 ==0) {
+		if (tick % 3000 == 0) {
 			dialog("초후 게임이 시작됩니다");
 			break;
 		}
