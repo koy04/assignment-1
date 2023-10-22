@@ -16,6 +16,7 @@ void move_random_M(int player, int dir);
 void mugunghwa_clear(int player);
 
 int dead_player[PLAYER_MAX] = { 0 };
+int ending_choice;
 
 // 무궁화 
 void tick_mugunghwa(void) {
@@ -68,7 +69,7 @@ void tick_mugunghwa(void) {
 	}
 	else if (tick == 5500) {
 		for (int i = 13; i <= 13; i++) {
-			for (int j = 0; j <= 30; j ++) {
+			for (int j = 0; j <= 30; j++) {
 				gotoxy(i, j);
 				printf(" ");
 			}
@@ -78,9 +79,9 @@ void tick_mugunghwa(void) {
 		back_buf[5][1] = '#';
 		back_buf[6][1] = '#';
 		back_buf[7][1] = '#';
-		
+
 		// 탈락 시키기
-		for(int i = 0; i < n_player; i++) {
+		for (int i = 0; i < n_player; i++) {
 			if (dead_player[i] == 1) {
 				back_buf[px[i]][py[i]] = ' ';
 				//탈락 플레이어 dialog로  나타냄
@@ -94,31 +95,31 @@ void tick_mugunghwa(void) {
 		tick = 0;
 	}		// player 1 부터는 랜덤으로 움직임(3방향)
 	for (int i = 1; i < n_player; i++) {
-		if(player[i] == false) {
+		if (player[i] == false) {
 			continue;
 		}
 		if (tick % period[i] == 0) {
-			if(2500 <= tick && tick <= 5500) {
+			if (2500 <= tick && tick <= 5500) {
 				//10%확률로 움직임
 				int out = rand() % 100;
 				if (out >= 90) {
 					int a = 0;
 					//앞에 ' ','@'이외에 다른것이 들어가있을경우 움직여도 생존
 					for (int j = 1; j < py[i]; j++) {
-						if(back_buf[px[i]][j] != ' ' && back_buf[px[i]][j] != '@') {
+						if (back_buf[px[i]][j] != ' ' && back_buf[px[i]][j] != '@') {
 							a = 1;
 							break;
 						}
 					}
 					move_random_M(i, -1);
-					if(a == 1) {
+					if (a == 1) {
 						continue;
 					}
 					player[i] = false;
 					n_alive--;
 					dead_player[i] = 1;
 				}
-			} 
+			}
 			else {
 				move_random_M(i, -1);
 			}
@@ -134,7 +135,7 @@ void mugunghwa_init(void) {
 	int x, y;
 	for (int i = 0; i < n_player; i++) {
 		// 같은 자리가 나오면 다시 생성
-		x = 1+i;
+		x = 1 + i;
 		y = 43;
 
 		px[i] = x;
@@ -148,7 +149,7 @@ void mugunghwa_init(void) {
 	back_buf[5][1] = '#';
 	back_buf[6][1] = '#';
 	back_buf[7][1] = '#';
-	
+
 
 
 	tick = 0;
@@ -259,6 +260,7 @@ void mugunghwa(void) {
 		// player 0만 손으로 움직임(4방향)
 		key_t key = get_key();
 		if (key == K_QUIT) {
+			ending_choice= 1;
 			break;
 		}
 		else if (key != K_UNDEFINED) {
@@ -269,22 +271,10 @@ void mugunghwa(void) {
 		Sleep(10);
 		tick += 10;
 		tick_mugunghwa();
-	}
-}
-void stop(void) {
-   system("cls");
-   int alive_players = 0;
-   for (int i = 0; i < n_player; i++) {
-      if (player[i]) {
-         alive_players++;
-      }
-   }
-   printf("우승자를 가리지 못했습니다.\n\n");
-   printf("살아남은 플레이어 : ");
 
-   for (int i = 0; i < n_player; i++) {
-      if (player[i]) {
-         printf(" %d", i);
-      }
-   }
+		if (n_alive == 1) {
+			break;
+		}
+
+	}
 }
