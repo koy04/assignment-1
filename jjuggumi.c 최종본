@@ -12,7 +12,7 @@
 
 int jjuggumi_init(void);
 void intro(void);
-
+int ending_choice = 0;
 
 // low 이상 high 이하 난수를 발생시키는 함수
 int randint(int low, int high) {
@@ -82,41 +82,80 @@ void intro(void) {
 
 //엔딩
 void ending(void) {
-	system("cls");
+	//우승자 출력
+	if (ending_choice == 1) {
+		system("cls");
+		for (int i = 0; i < n_player; i++) {
+			if (player[i]) {
+				i++;
+			}
+		}
+		printf("우승자를 가리지 못했습니다.\n\n");
+		printf("살아남은 플레이어 : ");
 
-	printf("***** 환영합니다. *****\n");
+		for (int i = 0; i < n_player; i++) {
+			if (player[i]) {
+				printf(" %d", i);
+			}
+		}
+	}
+
+	//q로 종료
+	else{
+		system("cls");
+
+		printf("***** 환영합니다. *****\n");
+
+		for (int i = 0; i < n_player; i++) {
+			if (player[i]) {
+				printf(" %d번 당신의 우승을 축하합니다. \n", i);
+			}
+		}
+		printf("\n");
+
+		printf(".");
+		Sleep(1000);
+		printf(".");
+		Sleep(1000);
+		printf(".");
+		Sleep(1000);
+		system("cls");
+		printf("***** 그런 당신에게 선택권을 드리겠습니다. *****\n\n");
+		printf("게임을 그만 하시겠습니까? 아니면 계속하시겠습니까?\n");
+		printf("\n");
+		printf("             Yes = 'Y' or No = 'N'    \n");
+		printf("\n");
+		printf("                 선택해주시죠!     \n\n");
+
+	}
+}
+
+
+void stop(void) {
+	system("cls");
+	for (int i = 0; i < n_player; i++) {
+		if (player[i]) {
+			i++;
+		}
+	}
+	printf("우승자를 가리지 못했습니다.\n\n");
+	printf("살아남은 플레이어 : ");
 
 	for (int i = 0; i < n_player; i++) {
 		if (player[i]) {
-			printf(" %d번 당신의 우승을 축하합니다. \n", i);
+			printf(" %d", i);
 		}
 	}
-	printf("\n");
-
-	printf(".");
-	Sleep(1000);
-	printf(".");
-	Sleep(1000);
-	printf(".");
-	Sleep(1000);
-	system("cls");
-	printf("***** 그런 당신에게 선택권을 드리겠습니다. *****\n\n");
-	printf("게임을 그만 하시겠습니까? 아니면 계속하시겠습니까?\n");
-	printf("\n");
-	printf("             Yes = 'Y' or No = 'N'    \n");
-	printf("\n");
-	printf("                 선택해주시죠!     \n\n");
-
 }
 
 int main(void) {
 	intro();
 	jjuggumi_init();
-	sample();
+	start();
 	mugunghwa();
 	//nightgame();
 	//juldarigi();
 	//jebi();
-	stop();
+	ending();
 	return 0;
 }
