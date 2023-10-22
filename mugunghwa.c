@@ -5,8 +5,7 @@
 #include "jjuggumi.h"
 #include "keyin.h"
 
-int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; clear_M[PLAYER_MAX];
-
+int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; 
 
 void mugunghwa(void);
 void tick_mugunghwa(void);
@@ -15,8 +14,8 @@ void move_tail_M(int player, int nx, int ny);
 void move_random_M(int player, int dir);
 void mugunghwa_clear(int player);
 
+int clear_M[PLAYER_MAX];
 int dead_player[PLAYER_MAX] = { 0 };
-int ending_choice;
 
 // 무궁화 
 void tick_mugunghwa(void) {
@@ -151,7 +150,7 @@ void mugunghwa_init(void) {
 	back_buf[7][1] = '#';
 
 
-
+	clear_player = 0;
 	tick = 0;
 }
 
@@ -243,6 +242,7 @@ void mugunghwa_clear(int player) {
 		for (int y = 0; y < 6; y++) {
 			if (px[p] == dx[x] && py[p] == dy[y]) {
 				clear_M[p] = true;
+				clear_player++;
 				back_buf[px[p]][py[p]] = ' ';
 			}
 		}
@@ -272,7 +272,7 @@ void mugunghwa(void) {
 		tick += 10;
 		tick_mugunghwa();
 
-		if (n_alive == 1) {
+		if (n_alive <= 1) {
 			break;
 		}
 
