@@ -87,7 +87,7 @@ void tick_mugunghwa(void) {
 				char dead[] = "   player d dead!     ";
 				dead[10] = i + '0';
 				dialog(dead);
-				dead_player[i] = 1;
+				dead_player[i] = 0;
 			}
 		}
 
